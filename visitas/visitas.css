@@ -1,0 +1,281 @@
+/* visitas/visitas.css */
+
+/* Sync badge (mesmo padrao do vendas) */
+.sync-badge {
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+}
+.sync-badge.ok   { background: rgba(0,212,180,0.10); border-color: rgba(0,212,180,0.25); color: var(--accent); }
+.sync-badge.err  { background: rgba(255,92,108,0.08); border-color: rgba(255,92,108,0.25); color: var(--danger); }
+
+/* KPIs e filtros: reusa o que ja existe no vendas.css ideal,
+   mas como cada modulo eh isolado, replico aqui pra estarem completos. */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.kpi {
+  padding: 16px 18px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.kpi__label { font-size: 12px; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+.kpi__value { font-size: 22px; font-weight: 700; }
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field--grow { grid-column: span 2; }
+.field > span,
+.field > legend { font-size: 12px; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.04em; padding: 0; }
+.field select,
+.field input,
+.field textarea {
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  color: var(--fg);
+  outline: none;
+  transition: border-color 0.15s;
+  resize: vertical;
+}
+.field select:focus,
+.field input:focus,
+.field textarea:focus { border-color: var(--accent-dim); }
+
+/* Chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.chip {
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 999px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip:hover { color: var(--fg); border-color: var(--border-strong); }
+.chip.active {
+  background: rgba(0,212,180,0.12);
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* Tabela */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table th, .table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.table th {
+  background: var(--bg-elev-2);
+  color: var(--fg-dim);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.table tbody tr { transition: background 0.1s; cursor: pointer; }
+.table tbody tr:hover { background: var(--bg-elev); }
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  background: var(--bg-elev-2);
+}
+.empty { padding: 48px 24px; text-align: center; color: var(--fg-dim); }
+
+/* Tags inline */
+.tag-list { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.06);
+  color: var(--fg-dim);
+}
+.tag.warn { background: rgba(255,186,92,0.15); color: var(--warning); }
+.tag.danger { background: rgba(255,92,108,0.12); color: var(--danger); }
+
+.qual-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.qual-pill.otimo, .qual-pill.otima { background: rgba(0,212,180,0.15); color: var(--success); }
+.qual-pill.bom, .qual-pill.boa,
+.qual-pill.sim                   { background: rgba(0,212,180,0.10); color: var(--accent); }
+.qual-pill.parcial               { background: rgba(255,186,92,0.15); color: var(--warning); }
+.qual-pill.ruim                  { background: rgba(255,186,92,0.15); color: var(--warning); }
+.qual-pill.pessimo, .qual-pill.pessima,
+.qual-pill.nao                   { background: rgba(255,92,108,0.12); color: var(--danger); }
+
+/* ============== FORMULARIO ============== */
+.visit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.form-section {
+  padding: 20px 24px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.form-section h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 16px;
+  letter-spacing: 0;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.form-section .field { margin-bottom: 12px; }
+.form-section .field:last-child { margin-bottom: 0; }
+
+fieldset.field {
+  border: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+
+/* Pills (radios/checkboxes estilizados) */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.pills label {
+  position: relative;
+  cursor: pointer;
+}
+.pills label > input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.pills label > span {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--fg-dim);
+  transition: all 0.15s;
+}
+.pills label:hover > span { color: var(--fg); }
+.pills label > input:checked + span {
+  background: rgba(0,212,180,0.15);
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* Checkbox simples (multiplica, app instalado) */
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.form-status { margin-top: 8px; text-align: right; font-size: 13px; }
+.form-status.err { color: var(--danger); }
+.form-status.ok  { color: var(--accent); }
+
+/* ============== MODAL DETALHES ============== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 100;
+}
+.modal {
+  max-width: 420px;
+  width: 100%;
+}
+.modal--large {
+  max-width: 720px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.detail-section {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.detail-section:last-child { border-bottom: none; }
+.detail-section h3 {
+  font-size: 13px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+}
+.detail-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 14px;
+}
+.detail-row > strong { color: var(--fg-dim); font-weight: 500; }
+.detail-row > span   { color: var(--fg); word-break: break-word; }
+
+@media (max-width: 640px) {
+  .field--grow { grid-column: span 1; }
+  .detail-row { grid-template-columns: 1fr; gap: 2px; }
+  .detail-row > strong { font-size: 12px; }
+}

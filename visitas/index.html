@@ -9,13 +9,15 @@
   <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../icons/icon-180.png">
   <link rel="stylesheet" href="../shared/styles.css">
+  <link rel="stylesheet" href="visitas.css">
 </head>
 <body>
   <div id="app">
     <div class="center"><div class="spinner" aria-label="Carregando"></div></div>
   </div>
 
-  <template id="tpl-page">
+  <!-- ====================== DASHBOARD ====================== -->
+  <template id="tpl-dashboard">
     <div class="page">
       <header class="page__header">
         <a class="page__back" href="../">← Hub</a>
@@ -23,10 +25,208 @@
         <button class="btn btn--ghost" data-action="signout">Sair</button>
       </header>
 
-      <div class="card">
-        <h2>Módulo em construção</h2>
-        <p>O checklist de visitas (5 seções) e o dashboard de resultados serão implementados na próxima fase.</p>
-        <p class="dim">Placeholder publicado na Fase B do plano de migração.</p>
+      <div class="row" style="justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+        <button class="btn btn--primary" data-action="nova">+ Nova visita</button>
+        <div class="sync-badge" data-sync-badge>⟳ carregando…</div>
+      </div>
+
+      <!-- Cards de stats -->
+      <div class="kpis">
+        <div class="kpi"><div class="kpi__label">Total</div><div class="kpi__value" data-stat="total">—</div></div>
+        <div class="kpi"><div class="kpi__label">Regiões</div><div class="kpi__value" data-stat="regioes">—</div></div>
+        <div class="kpi"><div class="kpi__label">Com app</div><div class="kpi__value" data-stat="comApp">—</div></div>
+        <div class="kpi"><div class="kpi__label">Com reclamação</div><div class="kpi__value" data-stat="comReclamacao">—</div></div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filters">
+        <label class="field"><span>Região</span><select data-filter="regiao"><option value="">Todas</option></select></label>
+        <label class="field field--grow"><span>Buscar loja</span><input type="search" data-filter="busca" placeholder="Nome ou cidade"></label>
+        <label class="field"><span>Ordenar</span><select data-filter="ordem">
+          <option value="recent">Mais recente</option>
+          <option value="old">Mais antiga</option>
+          <option value="alpha">A → Z (loja)</option>
+        </select></label>
+      </div>
+
+      <!-- Chips -->
+      <div class="chips">
+        <button class="chip" data-chip="com_reclamacao">Com reclamações</button>
+        <button class="chip" data-chip="sem_sinalizador">Sem sinalizador</button>
+        <button class="chip" data-chip="app_nao_instalado">App não instalado</button>
+        <button class="chip" data-chip="vm_ruim">VM ruim/péssimo</button>
+        <button class="chip" data-chip="vendas_ruins">Vendas ruins</button>
+        <button class="chip" data-chip="reclama_preco">Reclama do preço</button>
+      </div>
+
+      <!-- Tabela -->
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Loja</th>
+                <th>Cidade</th>
+                <th>Região</th>
+                <th>VM</th>
+                <th>Vendas</th>
+                <th>App</th>
+                <th>Tags</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody data-rows></tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span data-rows-count>—</span>
+        </div>
+      </div>
+
+      <p class="footer">Visitas sincronizadas via Firestore. Funciona offline.</p>
+    </div>
+  </template>
+
+  <!-- ====================== FORM ====================== -->
+  <template id="tpl-form">
+    <div class="page">
+      <header class="page__header">
+        <a class="page__back" href="#" data-action="back">← Voltar</a>
+        <h1 class="page__title">Nova visita</h1>
+        <button class="btn btn--ghost" data-action="signout">Sair</button>
+      </header>
+
+      <form class="visit-form" data-form>
+        <!-- Secao 1: Identificacao -->
+        <section class="form-section">
+          <h2>1. Identificação</h2>
+          <div class="form-grid">
+            <label class="field"><span>Data da visita *</span><input type="date" name="i_data" required></label>
+            <label class="field"><span>Supervisora *</span><input type="text" name="i_supervisora" required placeholder="Nome"></label>
+            <label class="field field--grow"><span>Loja *</span><input type="text" name="i_loja" required></label>
+            <label class="field"><span>Cidade</span><input type="text" name="i_cidade"></label>
+            <label class="field"><span>Região</span><select name="i_regiao">
+              <option value="">—</option>
+              <option>Norte</option><option>Nordeste</option><option>Centro-Oeste</option>
+              <option>Sudeste</option><option>Sul</option>
+            </select></label>
+            <label class="field"><span>Representante</span><input type="text" name="i_representante"></label>
+          </div>
+        </section>
+
+        <!-- Secao 2: Visual -->
+        <section class="form-section">
+          <h2>2. Análise visual</h2>
+          <fieldset class="field">
+            <legend>Como está o VM?</legend>
+            <div class="pills" data-pills="v_vm">
+              <label><input type="radio" name="v_vm" value="otimo"><span>Ótimo</span></label>
+              <label><input type="radio" name="v_vm" value="bom"><span>Bom</span></label>
+              <label><input type="radio" name="v_vm" value="ruim"><span>Ruim</span></label>
+              <label><input type="radio" name="v_vm" value="pessimo"><span>Péssimo</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="field">
+            <legend>Produtos estão bem expostos?</legend>
+            <div class="pills">
+              <label><input type="radio" name="v_exposicao" value="sim"><span>Sim</span></label>
+              <label><input type="radio" name="v_exposicao" value="parcial"><span>Parcial</span></label>
+              <label><input type="radio" name="v_exposicao" value="nao"><span>Não</span></label>
+            </div>
+          </fieldset>
+          <label class="field"><span>Marcas com sinalizador no PDV</span>
+            <input type="text" name="v_sinalizadores" placeholder="Separe por vírgula. Ex: MY, ES, LP">
+          </label>
+        </section>
+
+        <!-- Secao 3: Relacionamento -->
+        <section class="form-section">
+          <h2>3. Relacionamento com o lojista</h2>
+          <fieldset class="field">
+            <legend>Como estão as vendas?</legend>
+            <div class="pills">
+              <label><input type="radio" name="r_vendas" value="otimo"><span>Ótimo</span></label>
+              <label><input type="radio" name="r_vendas" value="bom"><span>Bom</span></label>
+              <label><input type="radio" name="r_vendas" value="ruim"><span>Ruim</span></label>
+              <label><input type="radio" name="r_vendas" value="pessimo"><span>Péssimo</span></label>
+            </div>
+          </fieldset>
+          <label class="field"><span>Comportamento da cliente</span>
+            <textarea name="r_comportamento" rows="2" placeholder="Observações"></textarea>
+          </label>
+          <fieldset class="field">
+            <legend>Reclamações do lojista</legend>
+            <div class="pills">
+              <label><input type="checkbox" name="r_reclamacoes" value="prazo"><span>Prazo</span></label>
+              <label><input type="checkbox" name="r_reclamacoes" value="qualidade"><span>Qualidade</span></label>
+              <label><input type="checkbox" name="r_reclamacoes" value="preco"><span>Preço</span></label>
+              <label><input type="checkbox" name="r_reclamacoes" value="mix"><span>Mix</span></label>
+              <label><input type="checkbox" name="r_reclamacoes" value="atendimento"><span>Atendimento</span></label>
+              <label><input type="checkbox" name="r_reclamacoes" value="troca"><span>Troca</span></label>
+              <label><input type="checkbox" name="r_reclamacoes" value="portal"><span>Portal</span></label>
+            </div>
+          </fieldset>
+        </section>
+
+        <!-- Secao 4: Diagnostico -->
+        <section class="form-section">
+          <h2>4. Diagnóstico</h2>
+          <label class="field"><span>O que mais performou nas últimas semanas?</span><textarea name="d_mais" rows="2"></textarea></label>
+          <label class="field"><span>Quais produtos menos venderam?</span><textarea name="d_menos" rows="2"></textarea></label>
+          <label class="field"><span>O que a cliente acha dos preços?</span><textarea name="d_precos" rows="2"></textarea></label>
+          <label class="field"><span>Há dificuldade com o mix?</span><textarea name="d_mix" rows="2"></textarea></label>
+          <fieldset class="field">
+            <legend>Performance da equipe de vendas</legend>
+            <div class="pills">
+              <label><input type="radio" name="d_equipe" value="otima"><span>Ótima</span></label>
+              <label><input type="radio" name="d_equipe" value="boa"><span>Boa</span></label>
+              <label><input type="radio" name="d_equipe" value="ruim"><span>Ruim</span></label>
+              <label><input type="radio" name="d_equipe" value="pessima"><span>Péssima</span></label>
+            </div>
+          </fieldset>
+        </section>
+
+        <!-- Secao 5: Alinhamento -->
+        <section class="form-section">
+          <h2>5. Alinhamento</h2>
+          <label class="check"><input type="checkbox" name="a_multiplica"> Reforçados os benefícios do Programa Multiplica</label>
+          <label class="check"><input type="checkbox" name="a_app"> App instalado nos celulares da loja</label>
+          <fieldset class="field">
+            <legend>Indicadores discutidos</legend>
+            <div class="pills">
+              <label><input type="checkbox" name="a_indicadores" value="meta"><span>Meta</span></label>
+              <label><input type="checkbox" name="a_indicadores" value="atendimento_x_peca"><span>Atendimento × Peça</span></label>
+              <label><input type="checkbox" name="a_indicadores" value="estoque"><span>Estoque</span></label>
+              <label><input type="checkbox" name="a_indicadores" value="equipe"><span>Equipe</span></label>
+            </div>
+          </fieldset>
+          <label class="field"><span>Ações motivacionais e de alavancagem implantadas</span>
+            <textarea name="a_acoes" rows="3"></textarea>
+          </label>
+        </section>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn--ghost" data-action="back">Cancelar</button>
+          <button type="submit" class="btn btn--primary" data-submit>Salvar visita</button>
+        </div>
+        <p class="form-status muted" data-form-status></p>
+      </form>
+    </div>
+  </template>
+
+  <!-- ====================== MODAL DE DETALHES ====================== -->
+  <template id="tpl-detail">
+    <div class="modal-backdrop" data-detail-backdrop>
+      <div class="card modal modal--large">
+        <div class="row" style="justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+          <h2 data-detail-title>Visita</h2>
+          <button class="btn btn--ghost" data-action="close-detail">Fechar</button>
+        </div>
+        <div data-detail-body></div>
+        <div class="row" style="justify-content: flex-end; margin-top: 16px; gap: 8px;">
+          <button class="btn btn--ghost" data-action="delete-visit" style="color: var(--danger);">Excluir</button>
+        </div>
       </div>
     </div>
   </template>
