@@ -8,26 +8,41 @@ Tipos de entrada: `Adicionado`, `Modificado`, `Depreciado`, `Removido`, `Corrigi
 
 ## [Unreleased]
 
+### Pendente
+- Registrar Web App no Firebase Console e capturar `firebaseConfig` para `shared/firebase.js`.
+- Implementar esqueleto funcional: hub (`index.html` real), `shared/auth.js`, `shared/nav.js`, `shared/styles.css`.
+- Login com Google Sign-In ligado ao Firebase Auth.
+- Migrar Painel VE27 para módulo `/vendas/` (importador xlsx → Firestore + painel visualização).
+- Migrar Checklist La Moda para módulo `/visitas/` (form 5 seções + dashboard).
+- PWA: `manifest.webmanifest`, `sw.js`, ícones 192/512/maskable.
+- Importar os 7 xlsx atuais para `vendas_ve27` no Firestore.
+- Cutover dos repos antigos (`Fabi-Vendas-LM`, `Checklist-LM`) com redirect.
+- Criar logo + favicon.
+
+---
+
+## [0.0.1] — 2026-05-13 — Fase A completa
+
 ### Adicionado
-- Documentação inicial do projeto unificado (`ARQUITETURA.md`, `MIGRACAO.md`, `GUIA-DE-USO.md`, `CHANGELOG.md`, `ROADMAP.md`, `DECISOES.md`, `SECURITY.md`).
-- Decisão arquitetural: hub unificado `lamoda-fabi` substituindo os repos `Fabi-Vendas-LM` e `Checklist-LM`.
-- Stack definida: HTML/CSS/JS vanilla + Firebase (Firestore, Auth, Storage) + PWA + GitHub Pages.
-- Auth com **provider único Google Sign-In** no MVP (conta Google identificada por `felipeshimoda@outlook.com`, compartilhada Felipe+Fabiana; Outlook é só identificador, a conta de auth é Google).
-- Hospedagem: **Firebase Hosting** (substitui plano original de GitHub Pages, descartado por ausência de GitHub Pro).
-- URL pública final: `https://lamoda-fabi.web.app/`.
 - Projeto Firebase `lamoda-fabi` provisionado em `southamerica-east1`.
+- Authentication com **Google Sign-In** habilitado (nome público "La Moda - Fabi", email de suporte `felipeshimoda@outlook.com`).
+- Cloud Firestore em modo produção, banco `(default)` em São Paulo.
+- Cloud Storage em modo produção, bucket `gs://lamoda-fabi.firebasestorage.app` em US-EAST1 (always-free).
+- Upgrade do projeto para plano **Blaze** (necessário para Storage; uso projetado dentro do always-free).
+- Repositório GitHub privado `dev-felipeshimoda/lamoda-fabi` criado e primeiro `main` empurrado.
+- Estrutura local do repo: `firebase.json`, `.firebaserc`, `firebase/{firestore,storage}.rules`, `firebase/firestore.indexes.json`, `index.html` placeholder, `.gitignore`, `README.md`.
+- Firestore Rules e Storage Rules com **whitelist por email** (`felipeshimoda@outlook.com`) deployadas.
+- Hospedagem em **Firebase Hosting**: placeholder publicado em `https://lamoda-fabi.web.app/`.
+- Documentação inicial do projeto unificado (`ARQUITETURA.md`, `MIGRACAO.md`, `GUIA-DE-USO.md`, `CHANGELOG.md`, `ROADMAP.md`, `DECISOES.md`, `SECURITY.md`).
+
+### Decisões
+- Stack definida: HTML/CSS/JS vanilla + Firebase (Firestore, Auth, Storage, Hosting) + PWA.
+- Hub unificado `lamoda-fabi` substituindo os repos antigos `Fabi-Vendas-LM` e `Checklist-LM`.
+- Auth com **provider único Google Sign-In** no MVP (conta Google identificada por `felipeshimoda@outlook.com`).
+- Hospedagem **Firebase Hosting** (substitui plano original de GitHub Pages, inviável sem GitHub Pro).
+- Bucket Storage em US-EAST1 always-free em vez de São Paulo regional (custo zero pra MVP).
 - Tema visual: dark + teal + glassmorphism (herdado do Checklist-LM antigo).
 - Política de retenção: visitas mantidas sem expiração.
-
-### Pendente
-- Criar projeto Firebase `lamoda-fabi` (`southamerica-east1`).
-- Criar repositório GitHub `dev-felipeshimoda/lamoda-fabi` (privado, apenas código-fonte).
-- Inicializar Firebase Hosting (`firebase init hosting`).
-- Implementar esqueleto: hub, login Google, navegação.
-- Migrar Painel VE27 para módulo `/vendas/`.
-- Migrar Checklist La Moda para módulo `/visitas/`.
-- Importar 7 xlsx atuais para `vendas_ve27` no Firestore.
-- Criar logo, favicon e ícones PWA (192, 512, maskable).
 
 ---
 
