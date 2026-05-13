@@ -9,13 +9,56 @@ Tipos de entrada: `Adicionado`, `Modificado`, `Depreciado`, `Removido`, `Corrigi
 ## [Unreleased]
 
 ### Pendente
-- Migrar Painel VE27 para módulo `/vendas/` (importador xlsx → Firestore + painel visualização).
-- Migrar Checklist La Moda para módulo `/visitas/` (form 5 seções + dashboard).
-- PWA: `manifest.webmanifest`, `sw.js`, ícones 192/512/maskable.
-- Importar os 7 xlsx atuais para `vendas_ve27` no Firestore.
+- Importar os 7 xlsx atuais para `vendas_ve27` no Firestore (Felipe via UI).
 - Cutover dos repos antigos (`Fabi-Vendas-LM`, `Checklist-LM`) com redirect.
-- Criar logo + favicon definitivos.
-- Smoke test em mobile (Android + iOS).
+- Criar logo + favicon definitivos (substituindo o "F" placeholder).
+- Smoke test em mobile (Android Chrome + iOS Safari).
+- Comunicar nova URL para a Fabiana.
+
+---
+
+## [0.1.0] — 2026-05-13 — MVP funcional completo
+
+Marco: primeiro MVP do **La Moda - Fabi** com paridade funcional aos dois apps antigos, num único hub unificado.
+
+### Adicionado — PWA (Fase B parte 2)
+- `manifest.webmanifest` com nome, short_name, ícones e shortcuts (Vendas / Visitas).
+- `sw.js` — service worker cache-first do shell, passthrough Firebase, versionamento por `CACHE_VERSION`.
+- `icons/icon-{192,512,maskable-512,180}.png` — gerados em PowerShell via System.Drawing.
+- `<link rel="manifest">` + `apple-touch-icon` + registro do SW em todos os index.html.
+- App instalável via "Adicionar à tela inicial" no celular.
+
+### Adicionado — Módulo Vendas VE27 (Fase C)
+- `vendas/vendas.js` (~280 linhas):
+  - `onSnapshot` ao vivo de `vendas_ve27` (real-time).
+  - Importador xlsx via SheetJS (CDN): parse aba `Base`, COL_MAP de 10 campos.
+  - `normalize()` calcula `atingimentoPct`, `variacao`, `statusClass`.
+  - `importRows()` em writeBatch de 500 + doc em `vendas_ve27_uploads`.
+  - Backup do xlsx original em Cloud Storage (`backups/vendas_ve27/{ts}_{filename}`).
+  - `clearAllData()` em batch.
+  - Filtros: marca, escritório, cluster, status, busca razão social.
+  - KPIs: meta total, venda total, atingimento %, contagem clientes.
+  - Tabela top-200 ordenada por atingimento desc.
+  - Modal de progresso para importação e limpeza.
+- `vendas/vendas.css` — KPIs, filtros, tabela, status pills, atingimento bar, modal.
+
+### Adicionado — Módulo Visitas Pós-Vendas (Fase D)
+- `visitas/visitas.js` (~330 linhas):
+  - SPA simples com `state.view` (`dashboard` / `form`).
+  - Form com 5 seções (Identificação, Visual, Relacionamento, Diagnóstico, Alinhamento).
+  - Pills estilizadas para radios e checkboxes.
+  - `computeTags()` deriva: `com_reclamacao`, `sem_sinalizador`, `app_nao_instalado`, `vm_ruim`, `vendas_ruins`, `reclama_preco`.
+  - Dashboard: 4 stats + filtros (região, busca, ordem) + 6 chips de tag + tabela.
+  - Modal de detalhes com todos os campos + botão excluir.
+  - Data default = hoje no form.
+- `visitas/visitas.css` — pills, chips, qual-pills, tag-list, modal large.
+- Suporte offline herdado do Firestore SDK (IndexedDB).
+
+### Validado
+- Login Google em conta whitelisted (`felipeshimoda@outlook.com`) → hub renderiza.
+- Navegação Hub → Vendas → Hub → Visitas funciona com auth-gate.
+- Vendas: módulo renderiza, KPIs zerados, badge "0 registros", importador pronto para o primeiro xlsx.
+- Visitas: dashboard renderiza, "+ Nova visita" abre form, todas as 5 seções acessíveis.
 
 ---
 
