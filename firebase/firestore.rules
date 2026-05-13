@@ -1,0 +1,19 @@
+rules_version = '2';
+
+// MVP — single user (felipeshimoda@outlook.com).
+// Whitelist explícita por email; quando 2ª conta aparecer, migrar para role doc
+// (`users/{uid}.role`) já documentado em docs/ARQUITETURA.md §6.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner() {
+      return request.auth != null
+          && request.auth.token.email == 'felipeshimoda@outlook.com';
+    }
+
+    // Bloqueio total por padrão; a regra abaixo libera para a conta whitelisted.
+    match /{document=**} {
+      allow read, write: if isOwner();
+    }
+  }
+}
