@@ -9,6 +9,8 @@
   <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../icons/icon-180.png">
   <link rel="stylesheet" href="../shared/styles.css">
+  <link rel="stylesheet" href="vendas.css">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
   <div id="app">
@@ -23,10 +25,79 @@
         <button class="btn btn--ghost" data-action="signout">Sair</button>
       </header>
 
-      <div class="card">
-        <h2>Módulo em construção</h2>
-        <p>O painel VE27 (importador de xlsx + visualização de KPIs e clusters) será implementado na próxima fase.</p>
-        <p class="dim">Placeholder publicado na Fase B do plano de migração.</p>
+      <!-- Linha de admin / sync -->
+      <div class="row" style="justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+        <div class="row" data-admin-tools style="display: none;">
+          <label class="btn btn--primary">
+            <input type="file" accept=".xlsx,.xls" multiple style="display: none;" data-file-input>
+            Importar planilha(s)
+          </label>
+          <button class="btn btn--ghost" data-action="clear-all" title="Apaga todos os dados de vendas_ve27 (admin)">Limpar tudo</button>
+        </div>
+        <div class="sync-badge" data-sync-badge>⟳ carregando…</div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpis">
+        <div class="kpi"><div class="kpi__label">Meta total</div><div class="kpi__value" data-kpi="meta">—</div></div>
+        <div class="kpi"><div class="kpi__label">Venda total</div><div class="kpi__value" data-kpi="venda">—</div></div>
+        <div class="kpi"><div class="kpi__label">Atingimento</div><div class="kpi__value" data-kpi="atingimento">—</div></div>
+        <div class="kpi"><div class="kpi__label">Clientes</div><div class="kpi__value" data-kpi="clientes">—</div></div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filters">
+        <label class="field"><span>Marca</span><select data-filter="marca"><option value="">Todas</option></select></label>
+        <label class="field"><span>Escritório</span><select data-filter="escritorio"><option value="">Todos</option></select></label>
+        <label class="field"><span>Cluster</span><select data-filter="cluster"><option value="">Todos</option></select></label>
+        <label class="field"><span>Status</span><select data-filter="statusClass">
+          <option value="">Todos</option>
+          <option value="atingiu">Atingiu meta</option>
+          <option value="abaixo">Abaixo da meta</option>
+          <option value="nao_comprou">Não comprou</option>
+          <option value="desativado">Desativado</option>
+        </select></label>
+        <label class="field field--grow"><span>Buscar razão social</span><input type="search" data-filter="razao" placeholder="Ex: Casas Bahia"></label>
+      </div>
+
+      <!-- Tabela -->
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Marca</th>
+                <th>Cliente</th>
+                <th>Cidade</th>
+                <th>Cluster</th>
+                <th class="num">Meta</th>
+                <th class="num">Venda</th>
+                <th class="num">Ating.</th>
+                <th>Status</th>
+                <th>Semana</th>
+              </tr>
+            </thead>
+            <tbody data-rows></tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span data-rows-count>—</span>
+          <span data-rows-page></span>
+        </div>
+      </div>
+
+      <p class="footer">Total atualizado em tempo real via Firestore.</p>
+    </div>
+  </template>
+
+  <!-- Modal de progresso -->
+  <template id="tpl-progress">
+    <div class="modal-backdrop">
+      <div class="card modal">
+        <h2 data-progress-title>Importando…</h2>
+        <p data-progress-text class="muted">Lendo planilha…</p>
+        <div class="progress"><div class="progress__bar" data-progress-bar></div></div>
+        <p data-progress-detail class="dim" style="font-size: 13px;"></p>
       </div>
     </div>
   </template>
