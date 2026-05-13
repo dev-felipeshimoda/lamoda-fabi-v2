@@ -1,0 +1,22 @@
+{
+  "name":             "La Moda - Fabi",
+  "short_name":       "Fabi",
+  "description":      "Hub unificado: vendas VE27 + checklist pós-vendas La Moda.",
+  "start_url":        "/",
+  "scope":            "/",
+  "display":          "standalone",
+  "orientation":      "portrait",
+  "background_color": "#0a0f14",
+  "theme_color":      "#0a0f14",
+  "lang":             "pt-BR",
+  "dir":              "ltr",
+  "icons": [
+    { "src": "icons/icon-192.png",           "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png",           "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Vendas VE27",        "short_name": "Vendas",  "url": "/vendas/",  "description": "Painel VE27" },
+    { "name": "Visitas Pós-Vendas", "short_name": "Visitas", "url": "/visitas/", "description": "Checklist de visitas" }
+  ]
+}
