@@ -9,15 +9,35 @@ Tipos de entrada: `Adicionado`, `Modificado`, `Depreciado`, `Removido`, `Corrigi
 ## [Unreleased]
 
 ### Pendente
-- Registrar Web App no Firebase Console e capturar `firebaseConfig` para `shared/firebase.js`.
-- Implementar esqueleto funcional: hub (`index.html` real), `shared/auth.js`, `shared/nav.js`, `shared/styles.css`.
-- Login com Google Sign-In ligado ao Firebase Auth.
 - Migrar Painel VE27 para módulo `/vendas/` (importador xlsx → Firestore + painel visualização).
 - Migrar Checklist La Moda para módulo `/visitas/` (form 5 seções + dashboard).
 - PWA: `manifest.webmanifest`, `sw.js`, ícones 192/512/maskable.
 - Importar os 7 xlsx atuais para `vendas_ve27` no Firestore.
 - Cutover dos repos antigos (`Fabi-Vendas-LM`, `Checklist-LM`) com redirect.
-- Criar logo + favicon.
+- Criar logo + favicon definitivos.
+- Smoke test em mobile (Android + iOS).
+
+---
+
+## [0.0.2] — 2026-05-13 — Fase B parte 1 (esqueleto + auth)
+
+### Adicionado
+- **Web App** registrado no Firebase (`appId: 1:744123180995:web:83fc638560c3b58f7f3f76`).
+- `shared/firebase.js` — init do SDK Firebase 11 (auth, firestore, storage) com `firebaseConfig` completo.
+- `shared/auth.js` — `signInWithGoogle`, `signOut`, `onAuthChange` + upsert de `users/{uid}` no Firestore.
+- `shared/auth-gate.js` — helper `requireAuth` que redireciona para raiz se não logado.
+- `shared/styles.css` — design system completo (dark + teal + glassmorphism, mobile-first).
+- `app.js` — orquestração login ↔ hub na raiz, com tratamento de erros (popup bloqueado, cancelado).
+- `index.html` reescrito com templates `tpl-login` (botão Entrar com Google) e `tpl-hub` (avatar, nome, 2 cards, logout).
+- `vendas/index.html` + `vendas/vendas.js` — placeholder com auth-gate, link voltar e signout.
+- `visitas/index.html` + `visitas/visitas.js` — placeholder com auth-gate, link voltar e signout.
+
+### Validado
+- Login real com conta Google `felipeshimoda@outlook.com` via popup OAuth.
+- Doc `users/{uid}` criado automaticamente no primeiro login com `role: 'admin'` e `provider: 'google'`.
+- Firestore Rules com whitelist por email permitem leitura/escrita para a conta autorizada.
+- Hub renderiza avatar + nome do Google e expõe os 2 cards de módulos.
+- Auth-gate em `/vendas/` e `/visitas/` reconhece sessão e libera acesso.
 
 ---
 
